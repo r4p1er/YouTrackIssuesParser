@@ -4,15 +4,15 @@ namespace YouTrackIssuesParser;
 
 public class JwtAuthorization : IHttpAuthorization
 {
-    private readonly string token;
+    private readonly string _token;
 
     public JwtAuthorization(string token)
     {
-        this.token = token;
+        _token = token;
     }
     
-    public void Authorize(HttpRequestMessage message)
+    public AuthenticationHeaderValue Authorize()
     {
-        message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return new AuthenticationHeaderValue("Bearer", _token);
     }
 }

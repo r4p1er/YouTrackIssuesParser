@@ -16,7 +16,7 @@ public class IssuesLoader
         using (var message =
                new HttpRequestMessage(HttpMethod.Get, $"https://{source}.youtrack.cloud/api/issues?{query}"))
         {
-            httpAuthorization.Authorize(message);
+            message.Headers.Authorization = httpAuthorization.Authorize();
             var response = await httpClient.SendAsync(message);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
