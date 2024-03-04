@@ -2,22 +2,33 @@ namespace YouTrackIssuesParser;
 
 public class IssuesLoader
 {
-    private readonly HttpClient httpClient;
-    private readonly IHttpAuthorization httpAuthorization;
+    private readonly HttpClient _httpClient;
+    private readonly IHttpAuthorization _httpAuthorization;
+    private readonly string _uri;
 
-    public IssuesLoader(HttpClient httpClient, IHttpAuthorization httpAuthorization)
+    public IssuesLoader(HttpClient httpClient, string source, IHttpAuthorization httpAuthorization)
     {
-        this.httpClient = httpClient;
-        this.httpAuthorization = httpAuthorization;
+        _httpClient = httpClient;
+        _uri = $"https://{source}.youtrack.cloud/api/issues";
+        _httpAuthorization = httpAuthorization;
     }
 
-    public async Task<string> Load(string source, string query = "fields=id")
+    public async Task<string> LoadIssues(string query = "fields=id")
     {
-        using (var message =
-               new HttpRequestMessage(HttpMethod.Get, $"https://{source}.youtrack.cloud/api/issues?{query}"))
+        return await MakeRequest($"{_uri}?{query}");
+    }
+
+    public async Task<string> LoadTimeTracking(string id, string query = "fields=id")
+    {
+        return await MakeRequest($"{_uri}/{id}/timeTracking/workItems?{query}");
+    }
+
+    private async Task<string> MakeRequest(string uri)
+    {
+        using (var message = new HttpRequestMessage(HttpMethod.Get, uri))
         {
-            message.Headers.Authorization = httpAuthorization.Authorize();
-            var response = await httpClient.SendAsync(message);
+            message.Headers.Authorization = _httpAuthorization.Authorize();
+            var response = await _httpClient.SendAsync(message);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
