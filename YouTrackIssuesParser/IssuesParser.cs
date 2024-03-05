@@ -19,6 +19,9 @@ public class IssuesParser
                     Key = item.GetProperty("idReadable").GetString()!,
                     Name = item.GetProperty("summary").GetString(),
                     Description = item.GetProperty("description").GetString(),
+                    Updated = item.GetProperty("updated").ValueKind != JsonValueKind.Null
+                        ? DateTimeOffset.FromUnixTimeMilliseconds(item.GetProperty("updated").GetInt64())
+                        : null
                 };
 
                 foreach (var commentItem in item.GetProperty("comments").EnumerateArray())

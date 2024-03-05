@@ -6,6 +6,7 @@ public class Issue
     public string Key { get; set; }
     public string? Name { get; set; }
     public string? Description { get; set; }
+    public DateTimeOffset? Updated { get; set; }
     public List<Comment> Comments { get; set; } = new();
     public User? Assignee { get; set; }
     public string Type { get; set; }
