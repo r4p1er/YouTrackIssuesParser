@@ -1,7 +1,12 @@
-﻿namespace YouTrackIssuesParser.Models;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace YouTrackIssuesParser.Models;
 
 public class Issue
 {
+    [BsonId]
+    public ObjectId DocumentId { get; set; }
     public string Id { get; set; }
     public string Key { get; set; }
     public string? Name { get; set; }

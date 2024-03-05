@@ -20,7 +20,7 @@ public class IssuesLoader
 
     public async Task<string> LoadTimeTracking(string id, string query = "fields=id")
     {
-        return await MakeRequest($"{_uri}/{id}/timeTracking/workItems?{query}");
+        return await MakeRequest($"{_uri}/{id}/timeTracking?{query}");
     }
 
     private async Task<string> MakeRequest(string uri)
