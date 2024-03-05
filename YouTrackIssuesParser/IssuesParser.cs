@@ -100,4 +100,80 @@ public class IssuesParser
 
         return result;
     }
+
+    public TimeTracking ParseIssueWorkLog(string json)
+    {
+        using (var document = JsonDocument.Parse(json))
+        {
+            var workLog = new TimeTracking()
+            {
+                Id = document.RootElement.GetProperty("id").GetString()!,
+                Enabled = document.RootElement.GetProperty("enabled").GetBoolean(),
+                WorkItems = new()
+            };
+
+            foreach (var item in document.RootElement.GetProperty("workItems").EnumerateArray())
+            {
+                var workItem = new WorkItem()
+                {
+                    Id = item.GetProperty("id").GetString()!,
+                    Text = item.GetProperty("text").GetString(),
+                    Date = DateTimeOffset.FromUnixTimeMilliseconds(item.GetProperty("date").GetInt64()),
+                    Duration = new DurationValue()
+                    {
+                        Id = item.GetProperty("duration").GetProperty("id").GetString()!,
+                        Minutes = item.GetProperty("duration").GetProperty("minutes").GetInt32(),
+                        Presentation = item.GetProperty("duration").GetProperty("presentation").GetString()!
+                    }
+                };
+
+                if (item.GetProperty("type").ValueKind != JsonValueKind.Null)
+                {
+                    workItem.Type = new WorkItemType()
+                    {
+                        Id = item.GetProperty("type").GetProperty("id").GetString()!,
+                        Name = item.GetProperty("type").GetProperty("name").GetString()!
+                    };
+                }
+                else
+                {
+                    workItem.Type = null;
+                }
+
+                if (item.GetProperty("author").ValueKind != JsonValueKind.Null)
+                {
+                    workItem.Author = new User()
+                    {
+                        Id = item.GetProperty("author").GetProperty("id").GetString()!,
+                        Login = item.GetProperty("author").GetProperty("login").GetString()!,
+                        FullName = item.GetProperty("author").GetProperty("fullName").GetString()!,
+                        Email = item.GetProperty("author").GetProperty("email").GetString()
+                    };
+                }
+                else
+                {
+                    workItem.Author = null;
+                }
+
+                if (item.GetProperty("creator").ValueKind != JsonValueKind.Null)
+                {
+                    workItem.Creator = new User()
+                    {
+                        Id = item.GetProperty("creator").GetProperty("id").GetString()!,
+                        Login = item.GetProperty("creator").GetProperty("login").GetString()!,
+                        FullName = item.GetProperty("creator").GetProperty("fullName").GetString()!,
+                        Email = item.GetProperty("creator").GetProperty("email").GetString()
+                    };
+                }
+                else
+                {
+                    workItem.Creator = null;
+                }
+                
+                workLog.WorkItems.Add(workItem);
+            }
+
+            return workLog;
+        }
+    }
 }
