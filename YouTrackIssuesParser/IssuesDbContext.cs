@@ -24,21 +24,23 @@ public class IssuesDbContext
         await _collection.InsertManyAsync(docs);
     }
 
-    public async Task<BsonDocument> FindById(string id)
+    public async Task<BsonDocument?> FindById(string id)
     {
-        var filter = Builders<BsonDocument>.Filter.Eq("id", id);
-        return await _collection.FindAsync(filter).Result.FirstOrDefaultAsync();
+        var filter = Builders<BsonDocument>.Filter.Eq("Id", id);
+        return await (await _collection.FindAsync(filter)).FirstOrDefaultAsync();
     }
 
     public async Task ReplaceById(Issue issue)
     {
-        var bson = await FindById(issue.Id);
-        await _collection.ReplaceOneAsync(bson, issue.ToBsonDocument());
+        var filter = Builders<BsonDocument>.Filter.Eq("Id", issue.Id);
+        var doc = issue.ToBsonDocument();
+        doc.Remove("_id");
+        await _collection.ReplaceOneAsync(filter, doc);
     }
 
     public async Task DeleteById(string id)
     {
-        var bson = await FindById(id);
-        await _collection.DeleteOneAsync(bson);
+        var filter = Builders<BsonDocument>.Filter.Eq("Id", id);
+        await _collection.DeleteOneAsync(filter);
     }
 }

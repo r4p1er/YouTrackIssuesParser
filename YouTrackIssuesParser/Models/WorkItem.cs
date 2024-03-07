@@ -7,6 +7,6 @@ public class WorkItem
     public User? Creator { get; set; }
     public string? Text { get; set; }
     public WorkItemType? Type { get; set; }
-    public DateTimeOffset Date { get; set; }
+    public long Date { get; set; }
     public DurationValue Duration { get; set; }
 }

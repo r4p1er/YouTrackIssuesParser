@@ -20,7 +20,7 @@ public class IssuesParser
                     Name = item.GetProperty("summary").GetString(),
                     Description = item.GetProperty("description").GetString(),
                     Updated = item.GetProperty("updated").ValueKind != JsonValueKind.Null
-                        ? DateTimeOffset.FromUnixTimeMilliseconds(item.GetProperty("updated").GetInt64())
+                        ? item.GetProperty("updated").GetInt64()
                         : null
                 };
 
@@ -29,8 +29,7 @@ public class IssuesParser
                     var comm = new Comment()
                     {
                         Id = commentItem.GetProperty("id").GetString()!,
-                        Created =
-                            DateTimeOffset.FromUnixTimeMilliseconds(commentItem.GetProperty("created").GetInt64()),
+                        Created = commentItem.GetProperty("created").GetInt64(),
                         Deleted = commentItem.GetProperty("deleted").GetBoolean(),
                         Text = commentItem.GetProperty("text").GetString()
                     };
@@ -118,7 +117,7 @@ public class IssuesParser
                 {
                     Id = item.GetProperty("id").GetString()!,
                     Text = item.GetProperty("text").GetString(),
-                    Date = DateTimeOffset.FromUnixTimeMilliseconds(item.GetProperty("date").GetInt64()),
+                    Date = item.GetProperty("date").GetInt64(),
                     Duration = new DurationValue()
                     {
                         Id = item.GetProperty("duration").GetProperty("id").GetString()!,
