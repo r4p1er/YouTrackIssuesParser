@@ -1,0 +1,23 @@
+services:
+  app:
+    build: ./YouTrackIssuesParser/.
+    environment:
+      Authentication__Jwt: "perm:cm9vdA==.NDktMQ==.SxDRgvTW9ItJ6hGswCqHuMFzFVpYBz"
+      Source: "testjiraintegration"
+      Mongo__ConnectionString: "mongodb://root:example@mongo:27017/"
+      QuartzCronExpression: "0 19 12-21 * * ? *"
+    restart: always
+    depends_on:
+      - mongo
+    
+  mongo:
+    image: mongo
+    volumes:
+      - YouTrackIssuesParserVolume:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    restart: always
+
+volumes:
+  YouTrackIssuesParserVolume:
