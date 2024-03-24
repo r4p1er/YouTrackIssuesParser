@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Quartz;
@@ -13,6 +13,7 @@ class Program
     {
         var builder = Host.CreateApplicationBuilder(args);
 
+        builder.Services.AddLogging(logging => logging.AddConsole());
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddTransient<IHttpAuthorization, JwtAuthorization>(provider =>
             new JwtAuthorization(builder.Configuration["Authentication:Jwt"]!));
