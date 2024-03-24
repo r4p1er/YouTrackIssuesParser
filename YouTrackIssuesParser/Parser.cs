@@ -3,7 +3,7 @@ using YouTrackIssuesParser.Models;
 
 namespace YouTrackIssuesParser;
 
-public class IssuesParser
+public class Parser
 {
     public List<Issue> ParseIssuesArray(string json)
     {

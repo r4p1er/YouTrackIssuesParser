@@ -1,12 +1,12 @@
 namespace YouTrackIssuesParser;
 
-public class IssuesLoader
+public class YoutrackClient
 {
     private readonly HttpClient _httpClient;
     private readonly IHttpAuthorization _httpAuthorization;
     private readonly string _uri;
 
-    public IssuesLoader(HttpClient httpClient, string source, IHttpAuthorization httpAuthorization)
+    public YoutrackClient(HttpClient httpClient, string source, IHttpAuthorization httpAuthorization)
     {
         _httpClient = httpClient;
         _uri = $"https://{source}.youtrack.cloud/api/issues";

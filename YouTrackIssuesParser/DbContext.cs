@@ -4,11 +4,11 @@ using YouTrackIssuesParser.Models;
 
 namespace YouTrackIssuesParser;
 
-public class IssuesDbContext
+public class DbContext
 {
     private readonly IMongoCollection<BsonDocument> _collection;
 
-    public IssuesDbContext(IMongoCollection<BsonDocument> collection)
+    public DbContext(IMongoCollection<BsonDocument> collection)
     {
         _collection = collection;
     }
