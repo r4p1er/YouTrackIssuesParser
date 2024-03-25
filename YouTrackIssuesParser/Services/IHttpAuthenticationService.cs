@@ -1,6 +1,6 @@
 using System.Net.Http.Headers;
 
-namespace YouTrackIssuesParser;
+namespace YouTrackIssuesParser.Services;
 
 /// <summary>
 /// Сервис аутентификации http запроса

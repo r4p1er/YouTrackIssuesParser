@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Quartz;
 
-namespace YouTrackIssuesParser;
+namespace YouTrackIssuesParser.Jobs;
 
 /// <summary>
 /// Работа по парсингу задач с YouTrack

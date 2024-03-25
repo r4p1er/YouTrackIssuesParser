@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
+using YouTrackIssuesParser.Jobs;
+using YouTrackIssuesParser.Services;
 
 namespace YouTrackIssuesParser;
 

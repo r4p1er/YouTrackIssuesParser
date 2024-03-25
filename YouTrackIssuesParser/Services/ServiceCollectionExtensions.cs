@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace YouTrackIssuesParser;
+namespace YouTrackIssuesParser.Services;
 
 /// <summary>
 /// Расширения коллекции сервисов
