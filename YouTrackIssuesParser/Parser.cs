@@ -3,8 +3,16 @@ using YouTrackIssuesParser.Models;
 
 namespace YouTrackIssuesParser;
 
+/// <summary>
+/// Парсер для YouTrack
+/// </summary>
 public class Parser
 {
+    /// <summary>
+    /// Парсинг набора задач
+    /// </summary>
+    /// <param name="json">Json с набором задач</param>
+    /// <returns>Лист задач</returns>
     public List<Issue> ParseIssuesArray(string json)
     {
         var result = new List<Issue>();
@@ -100,6 +108,11 @@ public class Parser
         return result;
     }
 
+    /// <summary>
+    /// Парсинг WorkLog`а задачи
+    /// </summary>
+    /// <param name="json">Json WorkLog`а задачи</param>
+    /// <returns>WorkLog задачи</returns>
     public TimeTracking ParseIssueWorkLog(string json)
     {
         using (var document = JsonDocument.Parse(json))

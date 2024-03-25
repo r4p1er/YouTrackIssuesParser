@@ -3,11 +3,21 @@ using Quartz;
 
 namespace YouTrackIssuesParser;
 
+/// <summary>
+/// Работа по парсингу задач с YouTrack
+/// </summary>
 public class YoutrackParsingJob : IJob
 {
+    /// <inheritdoc cref="YoutrackClient"/>
     private readonly YoutrackClient _client;
+    
+    /// <inheritdoc cref="Parser"/>
     private readonly Parser _parser;
+    
+    /// <inheritdoc cref="DbContext"/>
     private readonly DbContext _context;
+    
+    /// <inheritdoc cref="ILogger"/>
     private readonly ILogger<YoutrackParsingJob> _logger;
     
     public YoutrackParsingJob(YoutrackClient client, Parser parser, DbContext context, ILogger<YoutrackParsingJob> logger)
@@ -18,6 +28,10 @@ public class YoutrackParsingJob : IJob
         _logger = logger;
     }
     
+    /// <summary>
+    /// Выполнить работу
+    /// </summary>
+    /// <param name="context">Контекст работы</param>
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("Started receiving tasks");
