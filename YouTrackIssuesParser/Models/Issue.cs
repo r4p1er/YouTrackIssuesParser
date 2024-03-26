@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace YouTrackIssuesParser.Models;
@@ -11,6 +13,7 @@ public class Issue
     /// <summary>
     /// Идентификатор документа MongoDB
     /// </summary>
+    [JsonIgnore]
     [BsonId]
     public ObjectId DocumentId { get; set; }
     
@@ -22,11 +25,13 @@ public class Issue
     /// <summary>
     /// Видимый в интерфейсе идентификатор задачи
     /// </summary>
+    [JsonPropertyName("idReadable")]
     public string Key { get; set; }
     
     /// <summary>
     /// Заголовок задачи
     /// </summary>
+    [JsonPropertyName("summary")]
     public string? Name { get; set; }
     
     /// <summary>
@@ -73,4 +78,10 @@ public class Issue
     /// WorkLog`и задачи
     /// </summary>
     public TimeTracking? WorkLogs { get; set; }
+    
+    /// <summary>
+    /// Строковое представление всех кастомных полей. Не сохраняется в базе данных
+    /// </summary>
+    [BsonIgnore]
+    public JsonArray CustomFields { get; set; }
 }

@@ -35,18 +35,18 @@ public class YoutrackParsingJob : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("Started receiving tasks");
-        string issuesJson = await _client.LoadIssues(
+        var issues = await _client.LoadIssues(
             "fields=id,updated,idReadable,summary,description,comments(author(id,login,fullName,email),text,id,created,deleted),customFields(name,value(id,login,fullName,email,name,presentation))");
-        _logger.LogInformation("Started parsing tasks");
-        var issues = _parser.ParseIssuesArray(issuesJson);
-        _logger.LogInformation($"Parsed {issues.Count} tasks");
+        _logger.LogInformation($"Received {issues.Count} tasks");
+        _logger.LogInformation("Started parsing custom fields");
+        _parser.ParseIssuesCustomFields(issues);
+        _logger.LogInformation("Parsed custom fields");
 
         _logger.LogInformation("Started updating database");
         foreach (var issue in issues)
         {
-            var timeTrackingJson = await _client.LoadTimeTracking(issue.Id,
+            issue.WorkLogs = await _client.LoadTimeTracking(issue.Id,
                 "fields=id,enabled,workItems(id,author(id,login,fullName,email),creator(id,login,fullName,email),text,type(id,name),date,duration(id,minutes,presentation))");
-            issue.WorkLogs = _parser.ParseIssueWorkLog(timeTrackingJson);
             var document = await _context.FindById(issue.Id);
             
             if (document == null)

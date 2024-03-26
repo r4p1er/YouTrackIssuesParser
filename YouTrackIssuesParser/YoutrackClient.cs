@@ -1,3 +1,5 @@
+using System.Net.Http.Json;
+using YouTrackIssuesParser.Models;
 using YouTrackIssuesParser.Services;
 
 namespace YouTrackIssuesParser;
@@ -28,13 +30,13 @@ public class YoutrackClient
     }
 
     /// <summary>
-    /// Загрузка задачи с YouTrack
+    /// Загрузка набора задач с YouTrack
     /// </summary>
     /// <param name="query">Параметры запроса</param>
-    /// <returns>Json с задачами</returns>
-    public async Task<string> LoadIssues(string query = "fields=id")
+    /// <returns>Десериализованный лист с задачами</returns>
+    public async Task<List<Issue>> LoadIssues(string query = "fields=id")
     {
-        return await MakeRequest($"{_uri}?{query}");
+        return await MakeRequest<List<Issue>>($"{_uri}?{query}");
     }
 
     /// <summary>
@@ -42,25 +44,29 @@ public class YoutrackClient
     /// </summary>
     /// <param name="id">Идентификатор задачи</param>
     /// <param name="query">Параметры запроса</param>
-    /// <returns>Json WorkLog`ов задачи</returns>
-    public async Task<string> LoadTimeTracking(string id, string query = "fields=id")
+    /// <returns>Десериализованный объект TimeTracking</returns>
+    public async Task<TimeTracking> LoadTimeTracking(string id, string query = "fields=id")
     {
-        return await MakeRequest($"{_uri}/{id}/timeTracking?{query}");
+        return await MakeRequest<TimeTracking>($"{_uri}/{id}/timeTracking?{query}");
     }
 
     /// <summary>
     /// Отправление запроса
     /// </summary>
     /// <param name="uri">Uri для отправления запроса</param>
-    /// <returns>Строковое содержимое http ответа</returns>
-    private async Task<string> MakeRequest(string uri)
+    /// <returns>Десериализованный объект</returns>
+    private async Task<T> MakeRequest<T>(string uri) where T: new()
     {
         using (var message = new HttpRequestMessage(HttpMethod.Get, uri))
         {
             message.Headers.Authorization = _httpAuthenticationService.Authenticate();
             var response = await _httpClient.SendAsync(message);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            var result =  await response.Content.ReadFromJsonAsync<T>();
+
+            if (result == null) throw new ArgumentNullException(nameof(T));
+
+            return result;
         }
     }
 }
