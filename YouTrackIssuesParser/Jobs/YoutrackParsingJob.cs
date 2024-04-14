@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Quartz;
+using YouTrackIssuesParser.Models;
 
 namespace YouTrackIssuesParser.Jobs;
 
@@ -43,12 +44,12 @@ public class YoutrackParsingJob : IJob
         _logger.LogInformation("Parsed custom fields");
 
         _logger.LogInformation("Started updating database");
-        foreach (var issue in issues)
+        Parallel.ForEach(issues, async issue =>
         {
             issue.WorkLogs = await _client.LoadTimeTracking(issue.Id,
                 "fields=id,enabled,workItems(id,author(id,login,fullName,email),creator(id,login,fullName,email),text,type(id,name),date,duration(id,minutes,presentation))");
             var document = await _context.FindById(issue.Id);
-            
+
             if (document == null)
             {
                 await _context.Add(issue);
@@ -57,7 +58,7 @@ public class YoutrackParsingJob : IJob
             {
                 await _context.ReplaceById(issue);
             }
-        }
+        });
         
         _logger.LogInformation("Updated database");
     }
